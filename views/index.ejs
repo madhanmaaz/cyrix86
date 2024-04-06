@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - CYRIx86</title>
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <style>
+        body {
+            padding: .5rem;
+        }
+
+        .tar {
+            border-bottom: 1px solid rgb(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            font-size: 1.2rem;
+            padding: .3rem;
+            width: 100%;
+        }
+
+        .tar p {
+            cursor: pointer;
+        }
+
+        .tar sup {
+            background: #ff2600;
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+            border-radius: 50%;
+        }
+
+        .tar sup.active {
+            background: #51ff00;
+        }
+
+        .tar button {
+            margin-left: auto;
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"
+        integrity="sha512-zoJXRvW2gC8Z0Xo3lBbao5+AS3g6YWr5ztKqaicua11xHo+AvE1b0lT9ODgrHTmNUxeCw0Ry4BGRYZfXu70weg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/assets/js/main.js"></script>
+</head>
+
+<body>
+    <%- include("bg") %>
+
+        <div class="main-container">
+            <div class="main-header">
+                <div class="left">
+                    <h2 class="tool-title">
+                        <p>CYRI<span>x</span>86</p>
+                        <small>-by madhanmaaz</small>
+                    </h2>
+                </div>
+
+                <div class="center">
+                    <h3>TARGETS <sup><%- data.length %></sup></h3>
+                </div>
+
+                <div class="right">
+                    <a href="/create">
+                        <button class="b-btn" title="payload builder"><i class="fa-solid fa-wrench"></i></button>
+                    </a>
+                    <a href="/fm?id=global">
+                        <button class="b-btn" title="global filemanager"><i
+                                class="fa-solid fa-folder-open"></i></button>
+                    </a>
+                    <a href="/logout">
+                        <button class="b-btn" title="logout"><i
+                                class="fa-solid fa-arrow-right-from-bracket"></i></button>
+                    </a>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <%for (const target of data) { %>
+                    <div class="tar">
+                        <p data-id="<%- target.id %>"><%- target.id %></p>
+                        <% if (target.online) { %>
+                            <sup data-id="<%- target.id %>" class="active"></sup>
+                            <% } else { %>
+                                <sup data-id="<%- target.id %>"></sup>
+                                <% } %>
+                                    <button class="b-btn delete-btn" data-id="<%- target.id %>"><i
+                                            class="fa-solid fa-trash"></i></button>
+                    </div>
+                    <% } %>
+            </div>
+        </div>
+
+        <script>
+            document.querySelectorAll(".main-content .tar p").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const id = btn.getAttribute("data-id")
+                    location.href = `/panel?id=${id}`
+                })
+            })
+
+            document.querySelectorAll(".delete-btn").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const id = btn.getAttribute("data-id")
+                    if (!confirm(`Do you want to delete ${id}?`)) return
+
+                    axios.get(`/del-tar?id=${id}`).then(res => {
+                        location.reload()
+                    }).catch(err => {
+                        alert(err)
+                        console.log(err);
+                    })
+                })
+            })
+
+            socket.on("conn-ping", data => {
+                const id = data.id
+                try {
+                    document.querySelector(`sup[data-id="${id}"]`).classList.add("active")
+                } catch (error) { }
+            })
+
+            socket.on("disconn-ping", id => {
+                try {
+                    document.querySelector(`sup[data-id="${id}"]`).classList.remove("active")
+                } catch (error) { }
+            })
+        </script>
+</body>
+
+</html>

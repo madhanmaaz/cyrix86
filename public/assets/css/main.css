@@ -1,0 +1,213 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+@import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css);
+
+:root {
+    --primary: #ff3600;
+    --secondary: #d00000;
+    --bg: rgba(0, 0, 0, 0.5);
+    --border: 1px solid rgb(255, 255, 255, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "JetBrains Mono", monospace;
+    background: none;
+    border: none;
+    outline: none;
+    text-decoration: none;
+    transition: all .5s;
+}
+
+::-webkit-scrollbar {
+    width: .3rem;
+    height: .3rem;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.36);
+    border-radius: 10px;
+}
+
+body {
+    height: 100dvh;
+    padding: 1rem;
+    color: #e5e5e5;
+}
+
+#video-background {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+.tool-title {
+    cursor: pointer;
+}
+
+.tool-title span {
+    color: #ff3600;
+}
+
+.tool-title small {
+    font-weight: 500;
+    display: block;
+    font-size: .8rem;
+    text-transform: capitalize !important;
+    text-align: right;
+    color: #00ff00;
+}
+
+pre {
+    white-space: pre-wrap;
+}
+
+hr {
+    height: 2px;
+    width: 100%;
+    background: rgb(255, 255, 255, 0.2);
+    backdrop-filter: blur(15px);
+    margin: .5rem auto;
+}
+
+.b-btn {
+    padding: .5rem .7rem;
+    color: #e5e5e5;
+    text-transform: uppercase;
+    border-radius: 4px;
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.box-inp {
+    width: 300px;
+    padding: .5rem;
+    display: inline-block;
+}
+
+.box-inp label {
+    display: block;
+    text-transform: uppercase;
+}
+
+.box-inp textarea,
+.box-inp select,
+.box-inp input {
+    width: 100%;
+    background: rgb(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    color: #e5e5e5;
+    font-size: 1rem;
+    padding: .5rem;
+    border-radius: 7px;
+    margin: .3rem;
+    border: 1px solid rgb(255, 255, 255, 0.2);
+}
+
+.box-inp select option {
+    background: #000;
+    color: #e5e5e5;
+}
+
+/* main box */
+
+.main-container {
+    background: var(--bg);
+    width: 100%;
+    height: 100%;
+    border: var(--border);
+    border-radius: 4px;
+    padding: .5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.main-header .left h2 {
+    text-transform: uppercase;
+}
+
+.main-header .left h2 span {
+    text-transform: lowercase;
+}
+
+.main-header .left small {
+    font-weight: 500;
+    display: block;
+    font-size: .8rem;
+    text-transform: capitalize !important;
+    text-align: right;
+    color: #00ff00;
+    cursor: pointer;
+}
+
+.main-content {
+    height: 100%;
+    overflow: hidden;
+    overflow-y: auto;
+    padding: 1rem 0;
+}
+
+/* popup */
+.popup-container {
+    position: fixed;
+    top: -100%;
+    left: 50%;
+    width: 350px;
+    transform: translateX(-50%);
+    background: #000;
+    border: var(--border);
+    padding: .5rem;
+    border-radius: 4px;
+    animation: aniPopup .5s ease-in-out forwards;
+}
+
+@keyframes aniPopup {
+    to {
+        top: 3rem;
+    }
+}
+
+.popup-container .popup-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-transform: uppercase;
+    border-bottom: var(--border);
+    padding-bottom: .5rem;
+}
+
+.popup-container .popup-content {
+    padding-top: .3rem;
+    text-align: left;
+}
+
+.popup-container .popup-content a {
+    color: aqua;
+}
+
+.popup-container .popup-head .fa-xmark {
+    cursor: pointer;
+    color: #ff0202;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.popup-container .popup-head .right {
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+}

