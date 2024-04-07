@@ -7,7 +7,7 @@ const path = require("path")
 const fs = require("fs")
 
 
-const INSTALLMODULENAME = `cyrix86b`
+const INSTALLMODULENAME = `https://github.com/madhanmaaz/cyrix86-module/archive/refs/heads/master.zip`
 const RUNMODULENAME = `cyrix86`
 
 async function generatePayload(body) {
