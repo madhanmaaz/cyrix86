@@ -104,6 +104,17 @@ module.exports = {
         lcompiler: "go",
         lcmd: `GOOS=windows GOARCH=amd64 ${COMPILER} build -ldflags -H=windowsgui -o "${OUTPUTFILENAME}" "${INPUTFILENAME}"`
     },
+    ps1: {
+        folder: "ps",
+        file: "main",
+        ext: "ps1",
+        oext: "ps1",
+        build: false,
+        wcompiler: "",
+        wcmd: "",
+        lcompiler: "",
+        lcmd: ""
+    },
     vbs: {
         folder: "vbs",
         file: "main",
