@@ -6,6 +6,9 @@
     </p>
 </p>
 
+#### DEMO
+https://youtu.be/VusSsiZ2pJk
+
 ## Installation
 Install **CYRIx86** with GIT
 ```bash
