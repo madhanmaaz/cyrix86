@@ -1,0 +1,171 @@
+:root {
+    --aside-width: 250px;
+}
+
+body {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+}
+
+aside {
+    width: var(--aside-width);
+    height: 100%;
+}
+
+aside .menu-list a,
+aside .menu-list button {
+    margin-bottom: .2rem;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .4rem .8rem;
+}
+
+aside .menu-list a img,
+aside .menu-list button img {
+    width: 30px;
+}
+
+.menu-button {
+    display: none;
+}
+
+/* main */
+main {
+    width: calc(100% - var(--aside-width));
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.component-form {
+    padding: .5rem;
+    display: none;
+}
+
+.component-form.active {
+    display: block;
+}
+
+.component-output {
+    height: 100%;
+    width: 100%;
+    padding: .5rem;
+    overflow-y: scroll;
+    display: none;
+}
+
+.component-output.active {
+    display: block;
+}
+
+.component-output video,
+.component-output img {
+    max-width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border: 2px solid #e5e5e52d;
+    border-radius: 8px;
+}
+
+.component-output audio {
+    max-width: 600px;
+    width: 100%;
+}
+
+/* terminal */
+.terminal-form input {
+    color: #e5e5e5;
+    width: 100%;
+    font-weight: 600;
+    font-size: 1rem;
+    font-family: monospace;
+}
+
+.terminal-output .line {
+    font-family: monospace;
+    font-size: 1.1rem;
+    color: #e5e5e5;
+    white-space: pre-wrap;
+}
+
+/* python */
+.python-form {
+    width: 100%;
+    height: 80vh;
+}
+
+.python-form .editor {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    gap: .5rem;
+    padding: .5rem 0;
+}
+
+.python-form .editor textarea {
+    width: 50% !important;
+    min-width: 50% !important;
+    max-height: 100% !important;
+    height: 100% !important;
+    resize: none;
+    font-family: monospace;
+}
+
+.python-form .editor pre {
+    overflow-y: auto;
+    padding-bottom: 4rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/*  filemanager-output */
+.filemanager-output {
+    position: relative;
+}
+
+.filemanager-output .table-container {
+    position: sticky;
+    top: 0;
+    height: 50vh;
+    overflow-y: auto;
+}
+
+
+/* media queries */
+@media(max-width: 768px) {
+    main header {
+        flex-direction: column;
+    }
+
+    aside {
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: -100%;
+        height: 100%;
+        z-index: 1000;
+    }
+
+    aside.active {
+        left: 0;
+    }
+
+    main {
+        width: 100%;
+    }
+
+    .menu-button {
+        display: flex;
+    }
+
+    .python-form .editor {
+        flex-direction: column;
+    }
+
+    .python-form .editor textarea {
+        width: 100% !important;
+        min-width: 100% !important;
+    }
+}

@@ -1,0 +1,39 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.4.47/css/materialdesignicons.min.css');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/bulma/1.0.3/css/bulma.min.css');
+
+@font-face {
+    font-family: 'Plus Jakarta Sans';
+    src: url(../src/fonts/PlusJakartaSans-Medium.woff2) format('woff2');
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    border: none;
+    outline: none;
+    background: none;
+    text-decoration: none;
+    transition: .5s ease;
+}
+
+html {
+    overflow-y: unset !important;
+    scrollbar-width: thin;
+    scroll-behavior: smooth;
+    scroll-padding-top: 3.5rem;
+}
+
+::-webkit-scrollbar {
+    width: 0.5rem;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #525252;
+    border-radius: 10px;
+}
+
+.mdi {
+    font-size: 1.4rem;
+}

@@ -1,15 +1,9 @@
-const express = require("express")
-const router = express.Router()
-const payloads = require("../payloads/payloads")
+const express = require('express')
 
-router.route("/").get((req, res) => {
-    res.render("create", {
-        payloads
-    })
-}).post((req, res) => {
-    const { generatePayload } = require("../payloads/creator")
-    generatePayload(req.body)
-    res.send(`OK`)
+const router = express.Router()
+
+router.get("/", (req, res) => {
+    res.render("create")
 })
 
 module.exports = router

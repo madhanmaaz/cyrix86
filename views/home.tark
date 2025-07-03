@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyrix86 | Home</title>
+    <link rel="stylesheet" href="/public/css/global.css">
+</head>
+
+<body>
+    {{- include("./header", { }) }}
+
+    <section class="section">
+        <div class="container is-widescreen">
+            <div
+                class="is-flex is-gap-1 is-flex-wrap-wrap my-2 is-align-content-center is-justify-content-space-between">
+                <h1 class="title is-6 is-uppercase m-0">
+                    Manage Clients
+                </h1>
+
+                <div class="is-flex is-gap-1 is-align-items-center">
+                    <code>{{ clients.length }}</code>
+                </div>
+            </div>
+
+            <div class="table-container box p-2 is-shadowless" style="overflow-y: scroll; height: 70vh;">
+                <table class="table is-fullwidth is-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Status</th>
+                            <th>Last Online</th>
+                            <th>Last Offline</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{:for client in clients }}
+                        {{- include("./chunks/client", { client }) }}
+                        {{/for}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.js"></script>
+    <script>
+        const socket = io("", {
+            secure: true,
+            transports: ["websocket"],
+            auth: {
+                id: `global-${Math.random().toString(36).substring(2)}`,
+                clientType: "global"
+            }
+        })
+
+        socket.on("client-ping", data => {
+            console.log("Client ping", data)
+            const tag = document.querySelector(`[data-status="${data.id}"]`)
+            const lastOnline = document.querySelector(`[data-last-online="${data.id}"]`)
+            const lastOffline = document.querySelector(`[data-last-offline="${data.id}"]`)
+
+            if (!tag) {
+                return addNewClient(data)
+            }
+
+            if (data.isOnline) {
+                tag.classList.remove("has-text-danger")
+                tag.classList.add("has-text-primary")
+                lastOnline.innerText = data.lastOnline
+            } else {
+                tag.classList.remove("has-text-primary")
+                tag.classList.add("has-text-danger")
+                lastOffline.innerText = data.lastOffline || "-"
+            }
+        })
+
+        document.querySelectorAll(".delete-btn").forEach(element => {
+            element.addEventListener("click", () => {
+                const id = element.dataset.id
+                deleteClient(id)
+            })
+        })
+
+        function addNewClient(client) {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <tr>
+                    <td>
+                        <a href="/panel?id=${client.id}" class="is-block">${client.id}</a>
+                    </td>
+                    <td>
+                        <span data-status="${client.id}" class="mdi mdi-signal ${client.isOnline ? " has-text-primary" : "has-text-danger" }"></span>
+                    </td>
+                    <td data-last-online="${client.id}">${client.lastOnline}</td>
+                    <td data-last-offline="${client.id}">${client.lastOffline || "-"}</td>
+                    <td>
+                        <div class="buttons">
+                            <a href="/panel?id=${client.id}" class="button is-small is-primary">
+                                <div class="icon">
+                                    <span class="mdi mdi-play"></span>
+                                </div>
+                            </a>
+                            <button class="button is-danger is-small delete-btn" data-id="${client.id}">
+                                <div class="icon">
+                                    <span class="mdi mdi-delete"></span>
+                                </div>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `
+
+            document.querySelector("tbody").appendChild(tr)
+            tr.querySelector(".delete-btn").addEventListener("click", () => {
+                deleteClient(client.id)
+            })
+        }
+
+        async function deleteClient(id) {
+            if (!confirm("Are you sure you want to delete this client?")) return
+
+            try {
+                const response = await fetch(`/home`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        id
+                    })
+                })
+
+                const jsonData = await response.json()
+                if (jsonData.ack) {
+                    return location.reload()
+                }
+
+                alert("Something went wrong: " + jsonData.msg)
+            } catch (error) {
+                console.error(error)
+                alert("Something went wrong: " + error.message)
+            }
+        }
+    </script>
+</body>
+
+</html>

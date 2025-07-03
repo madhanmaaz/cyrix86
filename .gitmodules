@@ -1,0 +1,3 @@
+[submodule "powershell-kovak"]
+	path = powershell-kovak
+	url = https://github.com/madhanmaaz/powershell-kovak.git

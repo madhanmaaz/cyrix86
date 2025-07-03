@@ -1,0 +1,34 @@
+<header class="has-background-black">
+    <div
+        class="p-3 container is-widescreen is-flex is-align-items-center is-justify-content-space-between is-gap-1 is-flex-wrap-wrap ">
+        <a href="/" class="m-0 p-0">
+            <h1 class="title is-5 m-1">CYRI<span class="has-text-danger">x</span>86</h1>
+        </a>
+
+        <div class="is-flex is-gap-1 is-align-items-center">
+            <form action="/storage" method="get" class="is-flex is-gap-1 is-align-items-center">
+                <div class="select is-small">
+                    <select name="id">
+                        <option value="global">Global</option>
+                        {{:for value, index in $.clientsFolders }}
+                            <option value="{{ value }}" selected="$.clientFolderId === value">{{ value}}</option>  
+                        {{/for}}
+                    </select>
+                </div>
+
+                <button class="button is-small is-dark">
+                    <div class="icon px-3">
+                        <span class="mdi mdi-folder"></span>
+                    </div>
+                </button>
+            </form>
+
+            <a href="/create" class="button is-dark is-small">
+                <span>Create</span>
+            </a>
+            <a href="/login" class="button is-dark is-small">
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+</header>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyrix86 | Storage</title>
+    <link rel="stylesheet" href="/public/css/global.css">
+    <style>
+        .filename {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            max-width: 100%;
+            width: 500px;
+        }
+
+        .filename:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    {{- include("./header") }}
+
+    <section class="section">
+        <div class="container is-widescreen">
+            <div
+                class="is-flex is-gap-1 is-flex-wrap-wrap my-2 is-align-content-center is-justify-content-space-between">
+                <h1 class="title is-5 m-0">Storage</h1>
+
+                <div>
+                    <input type="file" class="file" id="upload-file">
+                </div>
+            </div>
+
+            <div class="table-container box p-2 is-shadowless" style="overflow-y: scroll; height: 70vh;">
+                <table class="table is-fullwidth is-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Size</th>
+                            <th>Extension</th>
+                            <th>Last Modified</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="5">
+                                <p class="is-size-7">Global Files <code>{{globalFiles.length }}</code></p>
+                            </td>
+                        </tr>
+                        {{:for file, index in globalFiles }}
+                            {{- include("./chunks/file", { file, id: "global" }) }}
+                        {{/for}}
+                        <tr>
+                            <td colspan="5">
+                                <p class="is-size-7">Client Files <code>{{clientFiles.length }}</code></p>
+                            </td>
+                        </tr>
+                        {{:for file, index in clientFiles }}
+                            {{- include("./chunks/file", { file, id }) }}
+                        {{/for}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.getElementById("upload-file").addEventListener("change", async function (e) {
+            const file = e.target.files[0]
+            const formData = new FormData()
+            formData.append("file", file)
+
+            try {
+                const response = await fetch(`/storage`, {
+                    method: "POST",
+                    body: formData
+                })
+
+                const jsonData = await response.json()
+                if (jsonData.ack) {
+                    return location.reload()
+                }
+
+                alert("Something went wrong: " + jsonData.msg)
+            } catch (error) {
+                console.error(error)
+                alert("Something went wrong: " + error.message)
+            }
+        })
+
+        document.querySelectorAll(".copy-file").forEach(element => {
+            element.addEventListener("click", async function (e) {
+                e.preventDefault()
+                try {
+                    const url = element.href
+                    await navigator.clipboard.writeText(url)
+                } catch (error) {
+                    console.error(error)
+                    alert("Something went wrong: " + error.message)
+                }
+            })
+        })
+
+        document.querySelectorAll(".delete-file").forEach(element => {
+            element.addEventListener("click", async function (e) {
+                const filename = element.dataset.filename
+                const id = element.dataset.id
+                try {
+                    const response = await fetch(`/storage`, {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            filename,
+                            id
+                        })
+                    })
+
+                    const jsonData = await response.json()
+                    if (jsonData.ack) {
+                        return location.reload()
+                    }
+
+                    alert("Something went wrong: " + jsonData.msg)
+                } catch (error) {
+                    console.error(error)
+                    alert("Something went wrong: " + error.message)
+                }
+            })
+        })
+    </script>
+</body>
+
+</html>

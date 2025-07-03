@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyrix86 | Login</title>
+    <link rel="stylesheet" href="/public/css/global.css">
+    <style>
+        section {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            max-width: 400px;
+            padding: 1rem;
+        }
+
+        .bottom-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+        <div class="box has-text-centered is-shadowless">
+            <h1 class="title is-5 is-uppercase">Login</h1>
+
+            <form action="/" method="post">
+                <div class="field">
+                    <input class="input" type="password" name="username" placeholder="Username" required autocomplete="off">
+                </div>
+                <div class="field">
+                    <input class="input" type="password" name="password" placeholder="Password" required autocomplete="off">
+                </div>
+
+                <button class="button is-primary px-6" type="submit">Submit</button>
+            </form>
+        </div>
+    </section>
+
+    <div class="bottom-banner p-2 is-flex is-justify-content-center is-gap-1 is-flex-wrap-wrap">
+        <a href="https://github.com/madhanmaaz/cyrix86">Source Code</a>
+        <span>|</span> Created by
+        <a href="https://madhanmaaz.netlify.app">Madhanmaaz</a>
+    </div>
+</body>
+
+</html>
