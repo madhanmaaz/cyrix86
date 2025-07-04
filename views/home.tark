@@ -37,7 +37,31 @@
                     </thead>
                     <tbody>
                         {{:for client in clients }}
-                        {{- include("./chunks/client", { client }) }}
+                        <tr>
+                            <td>
+                                <a href="/panel?id={{ client.id }}" class="is-block">{{
+                                    client.id }}</a>
+                            </td>
+                            <td>
+                                <span data-status="{{ client.id }}" class="mdi mdi-signal {{ client.isOnline ? " has-text-primary" : "has-text-danger" }}"></span>
+                            </td>
+                            <td data-last-online="{{ client.id }}">{{client.lastOnline}}</td>
+                            <td data-last-offline="{{ client.id }}">{{client.lastOffline || "-"}}</td>
+                            <td>
+                                <div class="buttons">
+                                    <a href="/panel?id={{ client.id }}" class="button is-small is-primary">
+                                        <div class="icon">
+                                            <span class="mdi mdi-play"></span>
+                                        </div>
+                                    </a>
+                                    <button class="button is-danger is-small delete-btn" data-id="{{ client.id }}">
+                                        <div class="icon">
+                                            <span class="mdi mdi-delete"></span>
+                                        </div>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
                         {{/for}}
                     </tbody>
                 </table>
@@ -138,7 +162,7 @@
                     return location.reload()
                 }
 
-                alert("Something went wrong: " + jsonData.msg)
+                alert(jsonData.msg)
             } catch (error) {
                 console.error(error)
                 alert("Something went wrong: " + error.message)

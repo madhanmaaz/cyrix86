@@ -1,7 +1,9 @@
 const path = require("node:path")
 const fs = require("node:fs")
+const cookieParser = require("cookie")
 
 const helpers = require('./helpers')
+const config = require('../config')
 
 const BROWSER_CLIENTS = {}
 const PYTHON_CLIENTS = {}
@@ -27,8 +29,22 @@ function emitDataToBrowser(id, data) {
 
 global.IO.on("connection", socket => {
     const { id, clientType } = socket.handshake.auth
+    
+    // authentication for browser sockets
+    if (clientType !== "python") {
+        const rawCookies = socket.handshake.headers.cookie
+        if (!rawCookies) {
+            return socket.disconnect(true)
+        }
+
+        const { token } = cookieParser.parse(rawCookies)
+        if (!token || token !== config.token) {
+            return socket.disconnect(true)
+        }
+    }
+
     console.log(`Connected [${clientType}] ${id}`)
-    const clientPath = path.join(process.__dirname, "public", "uploads", id)
+    const clientPath = path.join(helpers.clientsFolderPath, id)
     const infoFile = path.join(clientPath, "info.json")
 
     if (clientType === "browser") {

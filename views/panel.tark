@@ -86,9 +86,6 @@
 
                 <small>|</small>
                 <a href="/storage?id={{ info.id }}" class="button is-dark is-small">
-                    <div class="icon px-3">
-                        <span class="mdi mdi-folder"></span>
-                    </div>
                     <span>Storage</span>
                 </a>
                 <a href="/" class="button is-dark is-small">

@@ -1,11 +1,15 @@
-const config = require('../config')
+const path = require('node:path')
 const fs = require("node:fs")
 
-module.exports = {
-    BROWSER_CLIENTS: {},
-    PYTHON_CLIENTS: {},
-    GLOBAL_CLIENTS: {},
+const config = require('../config')
 
+const clientsFolderPath = path.join(process.__dirname, ".clients")
+if (!fs.existsSync(clientsFolderPath)) {
+    fs.mkdirSync(clientsFolderPath)
+}
+
+module.exports = {
+    clientsFolderPath,
     authorization(req, res, next) {
         const { token } = req.cookies
 
@@ -35,6 +39,6 @@ module.exports = {
     writeJson(path, data) {
         try {
             fs.writeFileSync(path, JSON.stringify(Object.assign(this.readJson(path), data)))
-        } catch (error) {}
+        } catch (error) { }
     },
 }

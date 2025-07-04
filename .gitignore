@@ -1,5 +1,4 @@
-public/global
-public/uploads
+.clients
 .vscode
 
 # Logs

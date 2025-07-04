@@ -2,21 +2,17 @@ const express = require('express')
 const path = require("node:path")
 const fs = require("node:fs")
 
+const clientManager = require('../utils/clientManager')
 const helpers = require('../utils/helpers')
 const router = express.Router()
 
 router.get("/", (req, res) => {
     const clients = []
-    const clientPath = path.join(process.__dirname, "public", "uploads")
 
-    if (!fs.existsSync(clientPath)) {
-        fs.mkdirSync(clientPath)
-    }
-
-    fs.readdirSync(clientPath, {
+    fs.readdirSync(helpers.clientsFolderPath, {
         withFileTypes: true
     }).forEach(file => {
-        const infoFile = path.join(clientPath, file.name, "info.json")
+        const infoFile = path.join(helpers.clientsFolderPath, file.name, "info.json")
 
         if (file.isDirectory() && fs.existsSync(infoFile)) {
             const info = helpers.readJson(infoFile)
@@ -40,7 +36,7 @@ router.delete("/", async (req, res) => {
             })
         }
 
-        const clientPath = path.join(process.__dirname, "public", "uploads", id)
+        const clientPath = path.join(helpers.clientsFolderPath, id)
         if (!fs.existsSync(clientPath)) {
             return res.json({
                 ack: false,
@@ -49,9 +45,12 @@ router.delete("/", async (req, res) => {
         }
 
         // disconnect python client
-        const client = helpers.PYTHON_CLIENTS[id]
-        if (client && client.connected) {
-            client.disconnect(true)
+        const client = clientManager.PYTHON_CLIENTS[id]
+        if (client) {
+            return res.json({
+                ack: false,
+                msg: "Client is connected. Please disconnect it first."
+            })
         }
 
         fs.rmSync(clientPath, { recursive: true })
@@ -60,6 +59,7 @@ router.delete("/", async (req, res) => {
             ack: true
         })
     } catch (error) {
+        console.error(error)
         res.json({
             ack: false,
             msg: error.message

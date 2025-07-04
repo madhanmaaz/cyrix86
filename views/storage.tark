@@ -28,10 +28,10 @@
         <div class="container is-widescreen">
             <div
                 class="is-flex is-gap-1 is-flex-wrap-wrap my-2 is-align-content-center is-justify-content-space-between">
-                <h1 class="title is-5 m-0">Storage</h1>
+                <h1 class="title is-5 m-0">{{ id }}'s Storage</h1>
 
                 <div>
-                    <input type="file" class="file" id="upload-file">
+                    <code>{{ files.length }}</code>
                 </div>
             </div>
 
@@ -47,21 +47,36 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {{:for file in files }}
                         <tr>
-                            <td colspan="5">
-                                <p class="is-size-7">Global Files <code>{{globalFiles.length }}</code></p>
+                            <td>
+                                <div class="is-flex is-gap-1 is-align-items-center">
+                                    <span class="mdi mdi-file has-text-grey"></span>
+                                    <a href="/storage/download/{{ id }}/{{file.name}}"
+                                        class="filename" target="_blank">{{file.name}}</a>
+                                </div>
+                            </td>
+                            <td>{{file.size}}</td>
+                            <td>{{file.extension}}</td>
+                            <td>{{file.lastModified}}</td>
+                            <td>
+                                <div class="buttons">
+                                    <a href="/storage/download/{{ id }}/{{file.name}}" target="_blank">
+                                        <button class="button is-small is-info">
+                                            <div class="icon">
+                                                <span class="mdi mdi-download"></span>
+                                            </div>
+                                        </button>
+                                    </a>
+                                    <button data-id="{{ id }}" data-filename="{{file.name}}"
+                                        class="delete-file button is-small is-danger">
+                                        <div class="icon">
+                                            <span class="mdi mdi-delete"></span>
+                                        </div>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
-                        {{:for file, index in globalFiles }}
-                            {{- include("./chunks/file", { file, id: "global" }) }}
-                        {{/for}}
-                        <tr>
-                            <td colspan="5">
-                                <p class="is-size-7">Client Files <code>{{clientFiles.length }}</code></p>
-                            </td>
-                        </tr>
-                        {{:for file, index in clientFiles }}
-                            {{- include("./chunks/file", { file, id }) }}
                         {{/for}}
                     </tbody>
                 </table>
@@ -70,42 +85,6 @@
     </section>
 
     <script>
-        document.getElementById("upload-file").addEventListener("change", async function (e) {
-            const file = e.target.files[0]
-            const formData = new FormData()
-            formData.append("file", file)
-
-            try {
-                const response = await fetch(`/storage`, {
-                    method: "POST",
-                    body: formData
-                })
-
-                const jsonData = await response.json()
-                if (jsonData.ack) {
-                    return location.reload()
-                }
-
-                alert("Something went wrong: " + jsonData.msg)
-            } catch (error) {
-                console.error(error)
-                alert("Something went wrong: " + error.message)
-            }
-        })
-
-        document.querySelectorAll(".copy-file").forEach(element => {
-            element.addEventListener("click", async function (e) {
-                e.preventDefault()
-                try {
-                    const url = element.href
-                    await navigator.clipboard.writeText(url)
-                } catch (error) {
-                    console.error(error)
-                    alert("Something went wrong: " + error.message)
-                }
-            })
-        })
-
         document.querySelectorAll(".delete-file").forEach(element => {
             element.addEventListener("click", async function (e) {
                 const filename = element.dataset.filename

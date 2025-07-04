@@ -13,7 +13,7 @@ router.get("/", (req, res) => {
         return res.redirect("/")
     }
 
-    const clientPath = path.join(process.__dirname, "public", "uploads", id)
+    const clientPath = path.join(helpers.clientsFolderPath, id)
     const infoFile = path.join(clientPath, "info.json")
     const info = helpers.readJson(infoFile)
     res.render("panel", {
