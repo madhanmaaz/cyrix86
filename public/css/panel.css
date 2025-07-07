@@ -74,6 +74,12 @@ main {
     width: 100%;
 }
 
+.component-output .line {
+    font-family: monospace;
+    font-size: 1.1rem;
+    white-space: pre-wrap;
+}
+
 /* terminal */
 .terminal-form input {
     color: #e5e5e5;
@@ -81,13 +87,6 @@ main {
     font-weight: 600;
     font-size: 1rem;
     font-family: monospace;
-}
-
-.terminal-output .line {
-    font-family: monospace;
-    font-size: 1.1rem;
-    color: #e5e5e5;
-    white-space: pre-wrap;
 }
 
 /* python */

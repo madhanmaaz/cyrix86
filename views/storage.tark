@@ -103,7 +103,8 @@
 
                     const jsonData = await response.json()
                     if (jsonData.ack) {
-                        return location.reload()
+                        element.closest("tr").remove()
+                        return
                     }
 
                     alert("Something went wrong: " + jsonData.msg)

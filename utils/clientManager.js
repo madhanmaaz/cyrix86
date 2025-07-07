@@ -1,6 +1,6 @@
 const path = require("node:path")
 const fs = require("node:fs")
-const cookieParser = require("cookie")
+const cookieUtils = require("cookie")
 
 const helpers = require('./helpers')
 const config = require('../config')
@@ -29,7 +29,7 @@ function emitDataToBrowser(id, data) {
 
 global.IO.on("connection", socket => {
     const { id, clientType } = socket.handshake.auth
-    
+
     // authentication for browser sockets
     if (clientType !== "python") {
         const rawCookies = socket.handshake.headers.cookie
@@ -37,7 +37,7 @@ global.IO.on("connection", socket => {
             return socket.disconnect(true)
         }
 
-        const { token } = cookieParser.parse(rawCookies)
+        const { token } = cookieUtils.parse(rawCookies)
         if (!token || token !== config.token) {
             return socket.disconnect(true)
         }
@@ -56,9 +56,15 @@ global.IO.on("connection", socket => {
     }
 
     else if (clientType === "python") {
-        if (PYTHON_CLIENTS[id]) {
-            console.log("Client already connected, so disconnecting...", id)
-            return socket.disconnect(true)
+        if (PYTHON_CLIENTS[id] && PYTHON_CLIENTS[id].connected) {
+            console.log("Disconnecting old connection and connecting new one")
+            // sending exit message to old connection
+            PYTHON_CLIENTS[id].emit("receiver", {
+                type: "others",
+                action: "exit",
+            })
+
+            socket.__isNewConnection = true
         }
 
         if (!fs.existsSync(clientPath)) {
@@ -119,15 +125,20 @@ global.IO.on("connection", socket => {
         }
 
         else if (clientType === "python") {
-            delete PYTHON_CLIENTS[id]
-            const pingData = {
-                id,
-                isOnline: false,
-                lastOffline: new Date().toLocaleString(),
-            }
+            // if it is new connection, don't delete it
+            if (PYTHON_CLIENTS[id].__isNewConnection) {
+                PYTHON_CLIENTS[id].__isNewConnection = false
+            } else {
+                delete PYTHON_CLIENTS[id]
+                const pingData = {
+                    id,
+                    isOnline: false,
+                    lastOffline: new Date().toLocaleString(),
+                }
 
-            emitPingToBrowser(pingData)
-            helpers.writeJson(infoFile, pingData)
+                emitPingToBrowser(pingData)
+                helpers.writeJson(infoFile, pingData)
+            }
         }
 
         else if (clientType === "global") {

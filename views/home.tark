@@ -103,8 +103,8 @@
 
         document.querySelectorAll(".delete-btn").forEach(element => {
             element.addEventListener("click", () => {
-                const id = element.dataset.id
-                deleteClient(id)
+                const tr = element.closest("tr")
+                deleteClient(tr, element)
             })
         })
 
@@ -138,15 +138,17 @@
             `
 
             document.querySelector("tbody").appendChild(tr)
-            tr.querySelector(".delete-btn").addEventListener("click", () => {
-                deleteClient(client.id)
+            const deleteBtn = tr.querySelector(".delete-btn")
+            deleteBtn.addEventListener("click", () => {
+                deleteClient(tr, deleteBtn)
             })
         }
 
-        async function deleteClient(id) {
+        async function deleteClient(parent, btn) {
             if (!confirm("Are you sure you want to delete this client?")) return
-
+            const id = btn.dataset.id
             try {
+                btn.classList.add("is-loading")
                 const response = await fetch(`/home`, {
                     method: "DELETE",
                     headers: {
@@ -159,13 +161,16 @@
 
                 const jsonData = await response.json()
                 if (jsonData.ack) {
-                    return location.reload()
+                    parent.remove()
+                    return
                 }
 
                 alert(jsonData.msg)
             } catch (error) {
                 console.error(error)
                 alert("Something went wrong: " + error.message)
+            } finally {
+                btn.classList.remove("is-loading")
             }
         }
     </script>

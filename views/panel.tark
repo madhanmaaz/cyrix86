@@ -332,39 +332,48 @@
         <form class="component-form python-form">
             <input type="hidden" name="type" value="python">
 
-            <div class="is-flex is-gap-1 is-align-items-center is-flex-wrap-wrap">
-                <div class="field">
-                    <label class="label is-small">App</label>
+            <div class="is-flex is-gap-1 is-align-items-center is-flex-wrap-wrap is-justify-content-space-between">
+                <div class="is-flex is-gap-1 is-align-items-center">
+                    <div class="tags has-addons m-0">
+                        <span class="tag is-info">Status</span>
+                        <span class="tag is-dark" id="python-status">-</span>
+                    </div>
+                    <div class="tags has-addons m-0">
+                        <span class="tag is-info">PID</span>
+                        <span class="tag is-dark" id="python-pid">-</span>
+                    </div>
                     <div class="select is-small">
-                        <select name="app">
-                            <option value="python">Python</option>
-                            <option value="pip">Pip</option>
+                        <select name="action">
+                            <option value="run">Run</option>
+                            <option value="kill">kill</option>
                         </select>
                     </div>
+                    <button class="button is-primary is-small">
+                        <div class="icon">
+                            <span class="mdi mdi-play"></span>
+                        </div>
+                    </button>
                 </div>
-
-                <div class="field">
-                    <label class="label is-small">Args</label>
-                    <input class="input is-small" type="text" name="args" autocomplete="off" spellcheck="false"
-                        placeholder="install package_name">
+                <div class="is-flex is-gap-1 is-align-items-center">
+                    <input class="input is-small" type="text" name="pipArgs" autocomplete="off" spellcheck="false"
+                        placeholder="ex: install requests mss" clear>
+                    <button class="button is-primary is-small">
+                        <div class="icon">
+                            <span class="mdi mdi-package-up"></span>
+                        </div>
+                    </button>
+                    <button class="button is-dark is-small" id="clear-python-output" type="button" title="Clear Output">
+                        <div class="icon">
+                            <span class="mdi mdi-backspace"></span>
+                        </div>
+                    </button>
                 </div>
-
-                <button class="button is-primary is-small">
-                    <div class="icon">
-                        <span class="mdi mdi-language-python"></span>
-                    </div>
-                    <span>Run</span>
-                </button>
             </div>
-            <p class="help">
-                <strong>Note:</strong> If you want to install pip package just write <code>install package_name</code>
-                in args input.
-            </p>
 
             <div class="editor">
                 <textarea name="code" class="textarea" placeholder="Code" autocomplete="off"
                     spellcheck="false"></textarea>
-                <pre class="component-output python-output"></pre>
+                <pre class="component-output python-output has-background-black"></pre>
             </div>
         </form>
 

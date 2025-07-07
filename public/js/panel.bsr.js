@@ -8,6 +8,8 @@ const lastOnlineText = document.querySelector("#lastOnline-text")
 const lastOfflineText = document.querySelector("#lastOffline-text")
 const filemanagerUpload = document.querySelector("#filemanager-upload")
 const filesTable = document.querySelector("#files-table")
+const pythonStatus = document.querySelector("#python-status")
+const pythonPid = document.querySelector("#python-pid")
 
 const indexComponent = new URLSearchParams(window.location.search).get("component") || "terminal"
 const socket = io("", {
@@ -53,7 +55,7 @@ async function sendCommand(data) {
         const jsonData = await response.json()
         const outputContainer = document.querySelector(`.${data.type}-output`)
         if (!jsonData.ack) {
-            addCommandOutput(outputContainer, jsonData.msg, jsonData.ack)
+            addCommandOutput(outputContainer, jsonData.msg)
         }
 
         return jsonData.ack
@@ -65,19 +67,16 @@ async function sendCommand(data) {
     }
 }
 
-function addCommandOutput(container, message, ack) {
+function addCommandOutput(container, message) {
     const wrapper = document.createElement("div")
     wrapper.className = "my-2 is-flex is-gap-1 is-align-items-center"
-
-    const msgCode = document.createElement("code")
-    msgCode.className = `has-text-${ack ? "success" : "danger"}`
-    msgCode.innerText = message
-
-    const timeCode = document.createElement("code")
-    timeCode.className = "has-text-info"
-    timeCode.innerText = new Date().toLocaleString()
-
-    wrapper.append(msgCode, timeCode)
+    wrapper.innerHTML = `
+        <code class="output-str has-text-grey-lighter"></code>
+        <code class="time-str has-text-info"></code>
+        <hr class="m-0 is-flex-grow-1"> 
+    `
+    wrapper.querySelector(".output-str").innerText = message
+    wrapper.querySelector(".time-str").innerText = new Date().toLocaleString()
     container.appendChild(wrapper)
 
     container.scrollTo({
@@ -86,14 +85,7 @@ function addCommandOutput(container, message, ack) {
     })
 }
 
-function addCommandLine(container, message) {
-    const div = document.createElement("div")
-    div.className = "line"
-    div.innerText = message
-    container.appendChild(div)
-}
-
-function renderFilesTable(rawData) {
+function renderFilesTable(outputContainer, rawData) {
     const allFiles = []
     const { files, folders } = JSON.parse(rawData)
     const tbody = document.createElement("tbody")
@@ -120,21 +112,29 @@ function renderFilesTable(rawData) {
     allFiles.forEach(file => {
         const tr = document.createElement("tr")
         tr.innerHTML = `
-            <td>
+            <td class="download-file-item">
                 <div class="is-flex is-gap-1 is-align-items-center is-clickable">
                     <span class="icon">
-                        ${file.isFile
-                ? `<span class="mdi mdi-file has-text-grey"></span>`
-                : `<span class="mdi mdi-folder has-text-warning"></span>`
-            }
+                        <span class="mdi ${file.isFile ? 'mdi-file has-text-grey' : 'mdi-folder has-text-warning'}"></span>
                     </span>
                     <span>${file.name}</span>
                 </div>
             </td>
         `
 
-        const btn = tr.querySelector("td")
-        btn.addEventListener("click", async () => {
+        const downloadBtn = tr.querySelector(".download-file-item")
+        downloadBtn.addEventListener("click", async () => {
+            if (file.isFile) {
+                addCommandOutput(outputContainer, `[Download]::[${file.name}]`)
+            } else {
+                requestAnimationFrame(() => {
+                    filesTable.scrollTo({
+                        top: 0,
+                        behavior: "smooth"
+                    })
+                })
+            }
+
             await sendCommand({
                 type: "filemanager",
                 action: "download",
@@ -147,6 +147,60 @@ function renderFilesTable(rawData) {
 
     filesTable.innerHTML = ""
     filesTable.appendChild(tbody)
+}
+
+function formatFormData(data) {
+    if (data.type === "python") {
+        if (data.pipArgs && data.pipArgs.trim().length !== 0) {
+            return {
+                type: "python",
+                action: "pip",
+                pipArgs: data.pipArgs,
+            }
+        }
+
+        if (data.action === "kill") {
+            return {
+                type: "python",
+                action: data.action
+            }
+        }
+
+        if (data.code.trim().length === 0) {
+            return alert("Code is empty")
+        }
+
+        return {
+            type: "python",
+            action: data.action,
+            code: data.code,
+        }
+    }
+
+    return data
+}
+
+function formatFormOutput(data) {
+    let outputObj = data
+    if (data.type === "python") {
+        if (data.pipArgs && data.pipArgs.trim().length !== 0) {
+            outputObj = {
+                type: "python",
+                action: "pip",
+                pipArgs: data.pipArgs,
+            }
+        } else {
+            outputObj = {
+                type: "python",
+                action: data.action,
+                code: "PYTHON_CODE",
+            }
+        }
+    }
+
+    return Object.values(outputObj).map(value => `[${value}]`)
+        .filter(Boolean)
+        .join("::")
 }
 
 componentBtns.forEach(element => {
@@ -177,17 +231,11 @@ componentForms.forEach(form => {
     form.addEventListener("submit", async (e) => {
         e.preventDefault()
         const formData = new FormData(form)
-        const data = Object.fromEntries(formData.entries())
-        const outputContainer = document.querySelector(`.${data.type}-output`)
-        const message = Object.entries(data).map(([key, value]) => {
-            if (
-                ["type"].includes(key) ||
-                ["python"].includes(data.type)
-            ) return false
-            return `[${value}]`
-        }).filter(Boolean)
+        const data = formatFormData(Object.fromEntries(formData.entries()))
+        if (!data) return
 
-        addCommandOutput(outputContainer, message.join("::"), true)
+        const outputContainer = document.querySelector(`.${data.type}-output`)
+        addCommandOutput(outputContainer, formatFormOutput(data))
 
         const state = await sendCommand(data)
         if (state) {
@@ -201,6 +249,8 @@ componentForms.forEach(form => {
 filemanagerUpload.addEventListener("click", async () => {
     const url = prompt("filename@URL")
     if (!url) return
+    const outputContainer = document.querySelector(`.filemanager-output`)
+    addCommandOutput(outputContainer, `[Upload]::[${url}]`)
 
     await sendCommand({
         type: "filemanager",
@@ -240,7 +290,10 @@ socket.on("receiver", data => {
     }
 
     if (data.type === "terminal") {
-        addCommandLine(outputContainer, data.output)
+        const wrapper = document.createElement("div")
+        wrapper.className = "line has-text-grey-light"
+        wrapper.innerText = data.output
+        outputContainer.appendChild(wrapper)
     }
 
     else if (data.type === "webcam") {
@@ -249,7 +302,7 @@ socket.on("receiver", data => {
             img.src = data.url
             outputContainer.appendChild(img)
         } else {
-            addCommandLine(outputContainer, data.output)
+            addCommandOutput(outputContainer, data.output)
         }
     }
 
@@ -264,7 +317,7 @@ socket.on("receiver", data => {
                 element.controls = true
             }
         } else {
-            addCommandLine(outputContainer, data.output)
+            addCommandOutput(outputContainer, data.output)
         }
     }
 
@@ -277,25 +330,40 @@ socket.on("receiver", data => {
 
     else if (data.type === "filemanager") {
         if (data.cwd) {
-            renderFilesTable(data.output)
-        } 
+            renderFilesTable(outputContainer, data.output)
+        }
 
         else if (data.url) {
             const a = document.createElement("a")
             a.className = "is-block my-2"
             a.href = data.url
             a.target = "_blank"
-            a.innerText = `Downloaded file: ${data.url}`
+            a.innerText = `File: ${data.url}`
             outputContainer.appendChild(a)
         }
-        
+
         else {
-            addCommandLine(outputContainer, data.output)
+            addCommandOutput(outputContainer, data.output)
+        }
+    }
+
+    else if (data.type === "python") {
+        const wrapper = document.createElement("div")
+        wrapper.className = "line has-text-grey-light"
+        wrapper.innerText = data.output
+        outputContainer.appendChild(wrapper)
+
+        if (data.pid != null) {
+            pythonPid.innerText = data.pid
+            pythonStatus.innerText = "Running"
+        } else {
+            pythonStatus.innerText = "-"
+            pythonPid.innerText = "-"
         }
     }
 
     else {
-        addCommandLine(outputContainer, data.output)
+        addCommandOutput(outputContainer, data.output)
     }
 
     outputContainer.scrollTo({
