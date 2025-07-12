@@ -2,9 +2,11 @@
     <img src="https://raw.githubusercontent.com/madhanmaaz/cyrix86/refs/heads/master/public/src/images/logo.png" alt="CYRIX86" width="200">
     <h1 align="center">CYRIX86</h1>
     <p align="center">
-        Windows Remote Access Tool. CYRIx86 provides you with a fully GUI-based control panel for attacks.
+        Windows Remote Access Tool. CYRIx86 provides you with a fully GUI-based control panel.
     </p>
 </p>
+
+For educational and awareness-raising purposes only. Unauthorized use is prohibited.
 
 #### DEMO
 https://youtu.be/VusSsiZ2pJk
