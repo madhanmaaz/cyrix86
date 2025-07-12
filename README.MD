@@ -6,7 +6,8 @@
     </p>
 </p>
 
-For educational and awareness-raising purposes only. Unauthorized use is prohibited.
+> [!IMPORTANT]
+> For educational and awareness-raising purposes only. Unauthorized use is prohibited.
 
 #### DEMO
 https://youtu.be/VusSsiZ2pJk
