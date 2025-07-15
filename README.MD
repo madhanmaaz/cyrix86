@@ -6,9 +6,6 @@
     </p>
 </p>
 
-> [!IMPORTANT]
-> For educational and awareness-raising purposes only. Unauthorized use is prohibited.
-
 #### DEMO
 https://youtu.be/VusSsiZ2pJk
 
@@ -50,8 +47,5 @@ The "cyrix86" tool is an educational resource designed for awareness-raising and
 It is free to use, but any commercial distribution or sale is restricted.
 The tool is intended to be used responsibly and with the explicit permission of the relevant network administrators or owners.
 The creators and copyright owners of "cyrix86" are not liable for any misuse or unauthorized use of the tool.
-
-For educational and awareness-raising purposes only. Unauthorized use is prohibited.
-
-Don't try this on your host | main machine.
+Unauthorized use is prohibited.
 ```

