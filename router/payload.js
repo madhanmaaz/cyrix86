@@ -1,6 +1,6 @@
 const express = require('express')
 
-const psKovak = require('../powershell-kovak/js/ps-kovak')
+const psKovak = require('../utils/ps-kovak')
 const config = require('../config')
 
 const router = express.Router()
