@@ -12,7 +12,7 @@ https://youtu.be/VusSsiZ2pJk
 ## Installation
 Install **CYRIx86** with GIT
 ```bash
-git clone --recurse-submodules https://github.com/madhanmaaz/cyrix86
+git clone https://github.com/madhanmaaz/cyrix86
 ```
 ```bash
 cd cyrix86
